@@ -1,8 +1,14 @@
-# syntax=docker/dockerfile:1.4
+# syntax = docker/dockerfile:1.4
 
-FROM --platform=$BUILDPLATFORM php:8.0.9-apache as builder
+FROM tiangolo/uvicorn-gunicorn-fastapi:python3.9-slim AS builder
 
-CMD ["apache2-foreground"]
+WORKDIR /app
+
+COPY requirements.txt ./
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install -r requirements.txt
+
+COPY ./app ./app
 
 FROM builder as dev-envs
 
@@ -18,5 +24,3 @@ usermod -aG docker vscode
 EOF
 # install Docker tools (cli, buildx, compose)
 COPY --from=gloursdocker/docker / /
-
-CMD ["apache2-foreground"]
