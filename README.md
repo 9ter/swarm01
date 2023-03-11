@@ -32,7 +32,7 @@ docker push TARGET_IMAGE[:TAG]
 version: '3.7'
 services:
   api:
-    image: 9terwatarebun/fastapi:112
+    image: TARGET_IMAGE[:TAG]
     networks:
      - webproxy
     environment:
