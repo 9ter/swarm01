@@ -8,55 +8,110 @@
 
 
 
-### Python/FastAPI application
-
-Project structure:
+- Set เวลา โดยใช้คำสั่ง
 ```
-├── compose.yaml
-├── Dockerfile
-├── requirements.txt
-├── app
-    ├── main.py
-    ├── __init__.py
-
+sudo time datectl set-timezone Asia/Bangkok
+```
+ - คำสั่งที่ใช้ในการ Set ชื่อ Hostname
+```
+sudo hostnamectl set-hostname **ชื่อที่ต้องการจะตั้ง**
+```
+- คำสั่งที่ใช้ในการเปลี่ยน Machine-ID
+```
+rm /var/lib/dbus/machine-id
+echo -n > /etc/machine-id
+cat /etc/machine-id
+ln -s /etc/machine-id /var/lib/dbus/machine-id
 ```
 
-[_compose.yaml_](compose.yaml)
+# INSTALL-DOCKER
+- คำสั่งที่ใช้ลง Docker
 ```
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+```
+- คำสั่งตรวจสอบการใช้งาน Docker
+```
+sudo docker run hello-world
+```
+# BUILD-IMAGE & TAG
+- คำสั่งการ Build image
+```
+sudo docker compose "fastapi/compose.yaml" up -d --build
+```
+- คำสั่งการ Tag
+```
+docker tag SOURCE_IMAGE[:TAG] TARGET_IMAGE[:TAG]
+```
+# PUSH IMAGE TO DOCKER HUB 
+- คำสั่งเข้าสู่ระบบ Docker ใน VSCODE
+```
+docker login
+```
+- คำสั่ง Push Image To Docker Hub
+```
+docker push TARGET_IMAGE[:TAG]
+```
+
+# CREATE STACK DEPLOY
+- สร้างไฟล์ compose.yaml
+```
+version: '3.7'
 services:
   api:
-    build: .
-    container_name: fastapi-application
-    environment:
-      PORT: 8000
+    image: alexanderssonn/swarm02-api:0304
+    networks:
+     - webproxy
     ports:
-      - '8000:8000'
-    restart: "no"
+     - "8808:8000"
+    environment:
+     PORT: 8000
+    logging:
+      driver: json-file
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - app:/app
+    deploy:
+      replicas: 1
 
+volumes:
+  app:          
+networks:
+  webproxy:
+    external: true
+```
+- นำ compose.yaml ไป Stack Deploy on local
+
+# SWARM CLUSTER
+- Revert Proxy compose.yaml
+```
+version: '3.7'
+services:
+  api:
+    image: TARGET_IMAGE[:TAG]
+    networks:
+     - webproxy
+    environment:
+     PORT: 8000
+    logging:
+      driver: json-file
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - app:/app
+    deploy:
+      replicas: 1
+      labels:
+        - traefik.docker.network=webproxy
+        - traefik.enable=true
+        - traefik.http.routers.${APPNAME}-https.entrypoints=websecure
+        - traefik.http.routers.${APPNAME}-https.rule=Host("${APPNAME} URL ")
+        - traefik.http.routers.${APPNAME}-https.tls.certresolver=default
+        - traefik.http.services.${APPNAME}.loadbalancer.server.port=8000
+
+volumes:
+  app:          
+networks:
+  webproxy:
+    external: true
 ```
 
-## Deploy with docker compose
-
-```shell
-docker-compose up -d --build
-```
-## Expected result
-
-Listing containers must show one container running and the port mapping as below:
-```
-$ docker ps
-CONTAINER ID   IMAGE          COMMAND       CREATED              STATUS              PORTS                                               NAMES
-7087a6e79610   5c1778a60cf8   "/start.sh"   About a minute ago   Up About a minute   80/tcp, 0.0.0.0:8000->8000/tcp, :::8000->8000/tcp   fastapi-application
-```
-
-After the application starts, navigate to `http://localhost:8000` in your web browser and you should see the following json response:
-```
-{
-"message": "OK"
-}
-```
-
-Stop and remove the containers
-```
-$ docker compose down
-```
+![chrome_pBhYL4EpB5](https://user-images.githubusercontent.com/115150753/223736430-23798aae-7ec1-4be0-a68b-4c865c4f763a.png)
