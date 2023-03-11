@@ -7,11 +7,10 @@
 [wakatime](https://wakatime.com/@spcn25/projects/glewvkqqyj?start=2023-02-27&end=2023-03-05)
 
 
-```
 # BUILD-IMAGE & TAG
 - คำสั่งการ Build image
 ```
-docker compose "fastapi/compose.yaml" up -d --build
+sudo docker compose "fastapi/compose.yaml" up -d --build
 ```
 - คำสั่งการ Tag
 ```
@@ -33,7 +32,7 @@ docker push TARGET_IMAGE[:TAG]
 version: '3.7'
 services:
   api:
-    image: 9terwatarebun/fastapi:112
+    image: alexanderssonn/swarm02-api:0304
     networks:
      - webproxy
     ports:
