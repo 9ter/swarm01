@@ -32,11 +32,9 @@ docker push TARGET_IMAGE[:TAG]
 version: '3.7'
 services:
   api:
-    image: alexanderssonn/swarm02-api:0304
+    image: 9terwatarebun/fastapi:112
     networks:
      - webproxy
-    ports:
-     - "8808:8000"
     environment:
      PORT: 8000
     logging:
@@ -46,12 +44,20 @@ services:
       - app:/app
     deploy:
       replicas: 1
+      labels:
+        - traefik.docker.network=webproxy
+        - traefik.enable=true
+        - traefik.http.routers.${APPNAME}-https.entrypoints=websecure
+        - traefik.http.routers.${APPNAME}-https.rule=Host("${APPNAME}.xops.ipv9.me")
+        - traefik.http.routers.${APPNAME}-https.tls.certresolver=default
+        - traefik.http.services.${APPNAME}.loadbalancer.server.port=8000
 
 volumes:
   app:          
 networks:
   webproxy:
     external: true
+
 ```
 - นำ compose.yaml ไป Stack Deploy on local
 
