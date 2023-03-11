@@ -7,36 +7,11 @@
 [wakatime](https://wakatime.com/@spcn25/projects/glewvkqqyj?start=2023-02-27&end=2023-03-05)
 
 
-
-- Set เวลา โดยใช้คำสั่ง
-```
-sudo time datectl set-timezone Asia/Bangkok
-```
- - คำสั่งที่ใช้ในการ Set ชื่อ Hostname
-```
-sudo hostnamectl set-hostname **ชื่อที่ต้องการจะตั้ง**
-```
-- คำสั่งที่ใช้ในการเปลี่ยน Machine-ID
-```
-rm /var/lib/dbus/machine-id
-echo -n > /etc/machine-id
-cat /etc/machine-id
-ln -s /etc/machine-id /var/lib/dbus/machine-id
-```
-
-# INSTALL-DOCKER
-- คำสั่งที่ใช้ลง Docker
-```
-sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-```
-- คำสั่งตรวจสอบการใช้งาน Docker
-```
-sudo docker run hello-world
 ```
 # BUILD-IMAGE & TAG
 - คำสั่งการ Build image
 ```
-sudo docker compose "fastapi/compose.yaml" up -d --build
+docker compose "fastapi/compose.yaml" up -d --build
 ```
 - คำสั่งการ Tag
 ```
@@ -58,7 +33,7 @@ docker push TARGET_IMAGE[:TAG]
 version: '3.7'
 services:
   api:
-    image: alexanderssonn/swarm02-api:0304
+    image: 9terwatarebun/fastapi:112
     networks:
      - webproxy
     ports:
@@ -114,4 +89,4 @@ networks:
     external: true
 ```
 
-![chrome_pBhYL4EpB5](https://user-images.githubusercontent.com/115150753/223736430-23798aae-7ec1-4be0-a68b-4c865c4f763a.png)
+![image](https://user-images.githubusercontent.com/98762543/224471388-08298469-cf76-4fb7-9175-045fb0fb8a25.png)
