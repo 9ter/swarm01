@@ -6,6 +6,9 @@
 ## wakatime project
 [wakatime](https://wakatime.com/@spcn25/projects/glewvkqqyj?start=2023-02-27&end=2023-03-05)
 
+# SWARM-DEPLOY
+[spcn25-fastapi.xops.ipv9.me](https://spcn25-fastapi.xops.ipv9.me/)
+
 
 # BUILD-IMAGE & TAG
 - คำสั่งการ Build image
