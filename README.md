@@ -10,7 +10,7 @@
 # BUILD-IMAGE & TAG
 - คำสั่งการ Build image
 ```
-sudo docker compose "fastapi/compose.yaml" up -d --build
+docker compose "fastapi/compose.yaml" up -d --build
 ```
 - คำสั่งการ Tag
 ```
